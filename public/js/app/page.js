@@ -786,8 +786,8 @@ LeaAce = {
             // 本身就有格式的, 防止之前有格式的显示为<span>(ace下)
             var classes = $pre.attr('class') || '';
             var isHtml = classes.indexOf('brush:html') != -1;
-            if ($pre.attr('style') ||
-                (!isHtml && $pre.html().indexOf('style') != -1)) { // 如果是html就不用考虑了, 因为html格式的支持有style
+            if ($pre.attr('style')/* ||
+                (!isHtml && $pre.html().indexOf('<style>') != -1)*/) { // 如果是html就不用考虑了, 因为html格式的支持有style
                 $pre.html($pre.text());
             }
             $pre.find('.toggle-raw').remove();
@@ -1313,6 +1313,11 @@ var State = {
         // 先隐藏, 再resize, 再显示
         // $('body').hide();
         // 延迟, 让body先隐藏, 效果先显示出来
+        function showBody() {
+            $('body').removeClass('init');
+            $("#mainMask").html("");
+            $("#mainMask").hide(0);
+        }
         setTimeout(function() {
             if (isMac()) {
                 if (/login/.test(location.href)) {
@@ -1321,12 +1326,10 @@ var State = {
                     win.center();
                 }
             }
-            setTimeout(function() {
-                // $('body').show();
-                $('body').removeClass('init');
-                $("#mainMask").html("");
-                $("#mainMask").hide(0);
-            }, 100);
+            showBody();
+            // setTimeout(function() {
+                // showBody();
+            // }, 100);
         });
         // end
         // 打开时，同步一下
@@ -1378,7 +1381,6 @@ var State = {
         }
 
         this.recoverAfter(initedCallback);
-
     }
 };
 
@@ -2081,6 +2083,11 @@ function userMenu(allUsers) {
 
     if (isMac() || debug) {
         setMacTopMenu();
+    }
+    if (debug) {
+        setTimeout(function () {
+            gui.win.toggleDevTools();
+        }, 3000)
     }
 
     //-------------------
